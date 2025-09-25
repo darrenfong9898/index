@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SBN Engagement Dashboard</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="bootstrap.min.css"/>
+
+  <style>
+    :root {
+      --bg: #0d1b2a;
+      --panel: #1b263b;
+      --text: #e0e1dd;
+      --muted: #a9b1ba;
+      --accent: #778da9;
+      --accent-2: #457b9d;
+      --danger: #e63946;
+    }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    }
+    .card {
+      background: var(--panel);
+      border: none;
+      border-radius: 12px;
+    }
+    .section-title {
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .badge-dark {
+      background:#0b1a2a;
+      border:1px solid #213247;
+    }
+    .img-fit {
+      width: 100%;
+      height: 360px;              /* consistent tiles */
+      object-fit: contain;          /* keep full image visible */
+      border-radius: 10px;
+    }
+    /* chart/table side-by-side section */
+    .bar-chart-container {
+      height: 350px;              /* matches table visual height */
+      position: relative;
+    }
+    /* Best post embed column stays compact */
+    #bestPostContainer .instagram-media {
+      margin: 0 auto !important;
+      background: transparent !important;
+    }
+    footer { color: var(--muted); }
+    a { color: #9ec1ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body class="p-4">
+  <div class="container-fluid">
+
+    <!-- Header -->
+    <header class="mb-4">
+      <h1 class="section-title">
+        <span class="text-danger">SBN</span> <span class="text-info">ENGAGEMENT</span>
+      </h1>
+    </header>
+
+    <!-- ROW 1: Countdown (full width) -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card p-4 text-center">
+          <h2 class="mb-3 section-title">Countdown to Event Day</h2>
+          <div id="countdown" class="display-5 fw-semibold"></div>
+          <div class="small text-secondary">Days : Hours : Minutes : Seconds</div>
+          <div class="mt-3">
+            <span class="badge badge-dark text-bg-dark fs-6 px-3 py-2">Dec 5, 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Activities (full width row; two tiles inside) -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card p-4">
+          <h2 class="mb-3 section-title">Activities</h2>
+          <div class="row g-4">
+            <div class="col-md-6">
+              <img src="Week-1.jpg" alt="This Week" class="img-fit mb-3">
+              <span class="badge bg-info">This Week</span>
+              <h5 class="mt-3 fw-semibold">Share an Interesting Story in Your Unit</h5>
+              <p class="mb-0">
+                Add <b>#WhereisSBN(CLUSTER)2025?</b>, <b>#{rank and name of participants}</b> and
+                <b>#artycluster</b> in your description and follow us for the latest news!
+              </p>
+            </div>
+            <div class="col-md-6">
+              <img src="Week-2.jpg" alt="Next Week" class="img-fit mb-3">
+              <span class="badge bg-secondary">Next Week</span>
+              <h5 class="mt-3 fw-semibold">Share an Outing with Your Unit</h5>
+              <p class="mb-0">
+                Add <b>#WhereisSBN?</b>, <b>#{rank and name of participants}</b> and
+                <b>#artycluster</b> in your description and follow us for the latest news!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Cluster Progress (chart) + Standings (table) -->
+    <div class="row mb-4">
+      <div class="col-lg-6">
+        <div class="card p-4 bar-chart-container">
+          <h2 class="mb-3 section-title">Cluster Progress</h2>
+          <canvas id="clusterChart" aria-label="Cluster progress chart" role="img"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card p-4">
+          <h2 class="mb-3 section-title">Cluster Standings</h2>
+          <table class="table table-dark table-striped align-middle mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cluster</th>
+                <th>Points</th>
+                <th>Posts</th>
+                <th>Last Submission</th>
+              </tr>
+            </thead>
+            <tbody id="clusterTable">
+              <tr><td>1</td><td>Alpha</td><td>42</td><td>19</td><td>25 Sep 2025, 14:55</td></tr>
+              <tr><td>2</td><td>Bravo</td><td>36</td><td>16</td><td>25 Sep 2025, 14:49</td></tr>
+              <tr><td>3</td><td>Charlie</td><td>31</td><td>15</td><td>25 Sep 2025, 14:40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 4: Highlights (Best Post + Commendables) -->
+    <div class="row mb-4">
+      <div class="col-lg-6">
+        <div class="card p-4">
+          <h2 class="mb-3 section-title">Best Post for the Week</h2>
+          <!-- Fixed embed (no public input) -->
+          <div id="bestPostContainer"></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card p-4">
+          <h2 class="mb-3 section-title">Commendable Efforts</h2>
+          <ol class="mb-0">
+            <li class="mb-3">
+              <a href="https://www.instagram.com/reel/EXAMPLE1/" target="_blank" rel="noopener">Title (hyperlinked to post)</a><br/>
+              <span class="text-warning">Alpha Cluster</span>
+            </li>
+            <li class="mb-3">
+              <a href="https://www.instagram.com/reel/EXAMPLE2/" target="_blank" rel="noopener">Title (hyperlinked to post)</a><br/>
+              <span class="text-warning">Bravo Cluster</span>
+            </li>
+            <li class="mb-1">
+              <a href="https://www.instagram.com/reel/EXAMPLE3/" target="_blank" rel="noopener">Title (hyperlinked to post)</a><br/>
+              <span class="text-warning">Charlie Cluster</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center mt-4">
+      <p class="mb-0">SBN Engagement Dashboard — live updates for clusters. Built with Bootstrap.</p>
+    </footer>
+  </div>
+
+  <!-- JS -->
+  <script src="bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script async src="https://www.instagram.com/embed.js"></script>
+  <script>
+    // ===== COUNTDOWN =====
+    const countdownEl = document.getElementById('countdown');
+    const eventDate = new Date('Dec 5, 2025 00:00:00').getTime();
+    setInterval(() => {
+      const now = Date.now();
+      const diff = Math.max(eventDate - now, 0);
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const s = Math.floor((diff % (1000*60)) / 1000);
+      countdownEl.textContent = `${d} : ${h} : ${m} : ${s}`;
+    }, 1000);
+
+    // ===== CLUSTER PROGRESS CHART =====
+    const ctx = document.getElementById('clusterChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Alpha', 'Bravo', 'Charlie'],
+        datasets: [{
+          label: 'Points',
+          data: [42, 36, 31],
+          backgroundColor: ['#e63946', '#457b9d', '#f4a261'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: '#cfd7df' }, grid: { color: '#2a3a4f' } },
+          x: { ticks: { color: '#cfd7df' }, grid: { display: false } }
+        }
+      }
+    });
+
+    // ===== BEST POST EMBED (fixed) =====
+    const BEST_POST_PERMALINK = 'https://www.instagram.com/reel/EXAMPLE_ID/'; // <-- replace weekly
+    function renderBestPost(permalink) {
+      const mount = document.getElementById('bestPostContainer');
+      mount.innerHTML = '';
+      const block = document.createElement('blockquote');
+      block.className = 'instagram-media';
+      block.setAttribute('data-instgrm-permalink', permalink);
+      block.setAttribute('data-instgrm-version', '14');
+      block.style.width = '100%';
+      mount.appendChild(block);
+      if (window.instgrm && window.instgrm.Embeds) {
+        window.instgrm.Embeds.process();
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBestPost(BEST_POST_PERMALINK);
+    });
+  </script>
+</body>
+</html>
