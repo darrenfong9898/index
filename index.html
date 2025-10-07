@@ -94,6 +94,17 @@
 /* Optional: ensure the card won’t visually spill */
 .card { overflow: hidden; }
 
+/* Let the canvas fill and not get squished */
+#clusterChart { display: block; width: 100% !important; height: 100% !important; }
+
+/* Slightly taller on very small screens to avoid clipping */
+@media (max-width: 576px) {
+  .bar-chart-container { height: 320px; }  /* was 280px */
+}
+
+/* If labels still look clipped, allow overflow for just this card */
+.card.bar-chart-container { overflow: visible; }
+
 
   </style>
 </head>
@@ -244,28 +255,43 @@
     }, 1000);
 
     // ===== CLUSTER PROGRESS CHART =====
-    const ctx = document.getElementById('clusterChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['ARC', 'Base HQ', 'Arty', 'Engineer'],
-        datasets: [{
-          label: 'Points',
-          data: [42, 36, 31, 31], // <-- replace weekly
-          backgroundColor: ['#e63946', '#457b9d', '#f4a261'],
-          borderWidth: 0
-        }]
+const ctx = document.getElementById('clusterChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['ARC', 'Base HQ', 'Arty', 'Engineer'],
+    datasets: [{
+      label: 'Points',
+      data: [42, 36, 31, 31],
+      backgroundColor: ['#e63946', '#457b9d', '#f4a261', '#e63946'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { bottom: 12 } }, // 👈 extra space for labels
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { 
+        beginAtZero: true, 
+        ticks: { color: '#cfd7df' }, 
+        grid: { color: '#2a3a4f' } 
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { beginAtZero: true, ticks: { color: '#cfd7df' }, grid: { color: '#2a3a4f' } },
-          x: { ticks: { color: '#cfd7df' }, grid: { display: false } }
-        }
+      x: { 
+        ticks: { 
+          color: '#cfd7df', 
+          autoSkip: false,  // 👈 force all cluster names to show
+          maxRotation: 0,   // 👈 keep labels straight
+          minRotation: 0,
+          font: { size: 10 } // 👈 smaller text so it fits
+        },
+        grid: { display: false }
       }
-    });
+    }
+  }
+});
+
 
     // ===== BEST POST EMBED (fixed) =====
     const BEST_POST_PERMALINK = 'https://www.instagram.com/reel/EXAMPLE_ID/'; // <-- replace weekly
