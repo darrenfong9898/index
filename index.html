@@ -102,8 +102,22 @@
   .bar-chart-container { height: 320px; }  /* was 280px */
 }
 
-/* If labels still look clipped, allow overflow for just this card */
-.card.bar-chart-container { overflow: visible; }
+/* --- Fix chart staying inside the card --- */
+.card.bar-chart-container {
+  overflow: hidden;          /* keep it within card bounds */
+  position: relative;
+}
+
+/* give more internal padding for x-axis labels */
+.bar-chart-container canvas {
+  padding-bottom: 20px;      /* adjust as needed */
+}
+
+/* slightly taller on mobile to keep spacing right */
+@media (max-width: 576px) {
+  .bar-chart-container { height: 340px; } /* was 320px */
+}
+
 
 
   </style>
