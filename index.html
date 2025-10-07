@@ -103,11 +103,6 @@
   width: 100% !important;
   height: 100% !important;
 }
-
-/* Ensure bottom space for labels stays visible inside the card */
-.bar-chart-container canvas {
-  margin-bottom: 16px;
-}
 /* FINAL chart container sizing (single source of truth) */
 .bar-chart-container {
   position: relative;
@@ -285,9 +280,7 @@ const isMobile = window.innerWidth <= 576;
 new Chart(ctx, {
   type: "bar",
   data: {
-    labels: isMobile
-      ? ["ARC", "BaseHQ", "Arty", "Engr"]        // shorter labels for phones
-      : ["ARC", "Base HQ", "Arty", "Engineer"],
+    labels: isMobile ? ["ARC","BaseHQ","Arty","Engr"] : ["ARC","Base HQ","Arty","Engineer"],
     datasets: [{
       label: "Points",
       data: [42, 36, 31, 31],
@@ -298,12 +291,8 @@ new Chart(ctx, {
   options: {
     responsive: true,
     maintainAspectRatio: false,
-
-    // Ensure label area exists
-    layout: { padding: { top: 10, bottom: 60 } },   // ← big enough for mobile
-
+    layout: { padding: { bottom: 32 } },   // space for labels below the axis
     plugins: { legend: { display: false } },
-
     scales: {
       y: {
         beginAtZero: true,
@@ -317,21 +306,16 @@ new Chart(ctx, {
           autoSkip: false,
           maxRotation: 0,
           minRotation: 0,
-          font: { size: isMobile ? 12 : 13 },
-
-          // ← DRAW LABELS INSIDE THE CHART so they can’t be clipped
-          mirror: true,
-          padding: 6
+          padding: 6,
+          font: { size: isMobile ? 11 : 13 }
+          // ❌ mirror: true  (remove this)
         },
         grid: { display: false },
-
-        // Reserve label space even if Chart.js miscalculates
-        afterFit: (axis) => { axis.height = Math.max(axis.height, 50); }
+        afterFit: (axis) => { axis.height = Math.max(axis.height, 28); } // keep some axis height
       }
     }
   }
 });
-// ===== END CLUSTER PROGRESS CHART =====
 
 
     // ===== BEST POST EMBED (fixed) =====
