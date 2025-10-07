@@ -111,9 +111,19 @@
 
 /* slightly taller on mobile to keep spacing right */
 @media (max-width: 576px) {
-  .bar-chart-container { height: 420px; } /* was 320px */
+  .bar-chart-container { height: 450px; } /* was 320px */
 }
 
+#clusterChart {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Ensure bottom space for labels stays visible inside the card */
+.bar-chart-container canvas {
+  margin-bottom: 16px;
+}
 
 
   </style>
@@ -298,10 +308,16 @@ new Chart(ctx, {
           autoSkip: false,     // show all names
           maxRotation: 0,
           minRotation: 0,
-          padding: 6,          // space away from axis line
-          font: { size: isMobile ? 10 : 12 }
+          padding: 8,          // more space away from axis line
+          font: { size: isMobile ? 11 : 13 },
+          callback: function(value, index, ticks) {
+            // Trim long labels on mobile
+            const label = this.getLabelForValue(value);
+            return isMobile ? label.replace(' ', '') : label;
+          }
         },
-        grid: { display: false }
+        grid: { display: false },
+        afterFit: (axis) => { axis.height = 30; } // ensures label space always exists
       }
     }
   }
