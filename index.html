@@ -42,11 +42,6 @@
       object-fit: contain;          /* keep full image visible */
       border-radius: 10px;
     }
-    /* chart/table side-by-side section */
-    .bar-chart-container {
-      height: 350px;              /* matches table visual height */
-      position: right;
-    }
     /* Best post embed column stays compact */
     #bestPostContainer .instagram-media {
       margin: 0 middle !important;
@@ -69,11 +64,8 @@
 }
 
 /* Mobile sizing tweaks */
-@media (max-width: 576px) {
-  .bar-chart-container { height: 280px; } /* was 350px */
   .img-fit { height: 220px; }             /* was 360px */
   .card.p-5 { padding: 1.25rem !important; } /* soften padding on small screens */
-}
 /* Add extra space between the chart and the next section */
 .bar-chart-container {
   margin-bottom: 2rem; /* adjust value if you want more or less */
@@ -98,10 +90,6 @@
 #clusterChart { display: block; width: 100% !important; height: 100% !important; }
 
 /* Slightly taller on very small screens to avoid clipping */
-@media (max-width: 576px) {
-  .bar-chart-container { height: 320px; }  /* was 280px */
-}
-
 /* --- Fix chart staying inside the card --- */
 .card.bar-chart-container {
   overflow: hidden;          /* keep it within card bounds */
@@ -110,10 +98,6 @@
 
 
 /* slightly taller on mobile to keep spacing right */
-@media (max-width: 576px) {
-  .bar-chart-container { height: 550px; } /* was 320px */
-}
-
 #clusterChart {
   display: block;
   width: 100% !important;
@@ -123,6 +107,26 @@
 /* Ensure bottom space for labels stays visible inside the card */
 .bar-chart-container canvas {
   margin-bottom: 16px;
+}
+/* FINAL chart container sizing (single source of truth) */
+.bar-chart-container {
+  position: relative;
+  height: 420px;          /* desktop/tablet */
+  margin-bottom: 2rem;
+  overflow: hidden;       /* keep content inside rounded card */
+}
+
+@media (max-width: 576px) {
+  .bar-chart-container {
+    height: 480px;        /* extra room for labels on phones */
+  }
+}
+
+/* Canvas sizing stays full */
+#clusterChart {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 
@@ -275,53 +279,59 @@
     }, 1000);
 
 // ===== CLUSTER PROGRESS CHART =====
-const ctx = document.getElementById('clusterChart').getContext('2d');
-
+const ctx = document.getElementById("clusterChart").getContext("2d");
 const isMobile = window.innerWidth <= 576;
 
 new Chart(ctx, {
-  type: 'bar',
+  type: "bar",
   data: {
-    labels: ['ARC', 'Base HQ', 'Arty', 'Engineer'],
+    labels: isMobile
+      ? ["ARC", "BaseHQ", "Arty", "Engr"]        // shorter labels for phones
+      : ["ARC", "Base HQ", "Arty", "Engineer"],
     datasets: [{
-      label: 'Points',
+      label: "Points",
       data: [42, 36, 31, 31],
-      backgroundColor: ['#e63946', '#457b9d', '#f4a261', '#e63946'],
+      backgroundColor: ["#e63946", "#457b9d", "#f4a261", "#e63946"],
       borderWidth: 0
     }]
   },
   options: {
     responsive: true,
     maintainAspectRatio: false,
-    // Give the chart internal space for the x-axis labels
-    layout: { padding: { bottom: isMobile ? 28 : 16 } },
+
+    // Ensure label area exists
+    layout: { padding: { top: 10, bottom: 60 } },   // ← big enough for mobile
+
     plugins: { legend: { display: false } },
+
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { color: '#cfd7df' },
-        grid: { color: '#2a3a4f' }
+        ticks: { color: "#cfd7df" },
+        grid: { color: "#2a3a4f" }
       },
       x: {
+        offset: true,
         ticks: {
-          color: '#cfd7df',
-          autoSkip: false,     // show all names
+          color: "#cfd7df",
+          autoSkip: false,
           maxRotation: 0,
           minRotation: 0,
-          padding: 8,          // more space away from axis line
-          font: { size: isMobile ? 11 : 13 },
-          callback: function(value, index, ticks) {
-            // Trim long labels on mobile
-            const label = this.getLabelForValue(value);
-            return isMobile ? label.replace(' ', '') : label;
-          }
+          font: { size: isMobile ? 12 : 13 },
+
+          // ← DRAW LABELS INSIDE THE CHART so they can’t be clipped
+          mirror: true,
+          padding: 6
         },
         grid: { display: false },
-        afterFit: (axis) => { axis.height = 30; } // ensures label space always exists
+
+        // Reserve label space even if Chart.js miscalculates
+        afterFit: (axis) => { axis.height = Math.max(axis.height, 50); }
       }
     }
   }
 });
+// ===== END CLUSTER PROGRESS CHART =====
 
 
     // ===== BEST POST EMBED (fixed) =====
