@@ -78,6 +78,21 @@
 .bar-chart-container {
   margin-bottom: 2rem; /* adjust value if you want more or less */
 }
+/* Make IG embed stay inside the card */
+#bestPostContainer { 
+  display: flex; 
+  justify-content: center; 
+}
+#bestPostContainer .instagram-media,
+#bestPostContainer iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;        /* override IG's min-width */
+  margin: 0 auto !important;
+}
+
+/* Optional: ensure the card won’t visually spill */
+.card { overflow: hidden; }
 
 
   </style>
@@ -261,7 +276,6 @@
       block.className = 'instagram-media';
       block.setAttribute('data-instgrm-permalink', permalink);
       block.setAttribute('data-instgrm-version', '14');
-      block.style.width = '100%';
       mount.appendChild(block);
       if (window.instgrm && window.instgrm.Embeds) {
         window.instgrm.Embeds.process();
