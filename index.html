@@ -55,6 +55,31 @@
     footer { color: var(--muted); }
     a { color: #9ec1ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
+    /* Keep last column tidy; prevent the row from exploding width */
+#clusterTable td:last-child,
+#clusterTable th:last-child { white-space: nowrap; }
+
+/* General table legibility */
+.table td, .table th { vertical-align: middle; }
+
+/* Instagram embed should fill width on mobile */
+#bestPostContainer .instagram-media {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Mobile sizing tweaks */
+@media (max-width: 576px) {
+  .bar-chart-container { height: 280px; } /* was 350px */
+  .img-fit { height: 220px; }             /* was 360px */
+  .card.p-5 { padding: 1.25rem !important; } /* soften padding on small screens */
+}
+/* Add extra space between the chart and the next section */
+.bar-chart-container {
+  margin-bottom: 2rem; /* adjust value if you want more or less */
+}
+
+
   </style>
 </head>
 <body class="p-4">
@@ -123,7 +148,8 @@
       <div class="col-lg-6 mb-4 mb-lg-0">
         <div class="card p-5">
           <h2 class="mb-3 section-title">Cluster Standings</h2>
-          <table class="table table-dark table-striped align-right mb-0">
+          <div class="table-responsive">  <!-- ✨ new -->
+            <table class="table table-dark table-striped align-middle table-sm mb-0"> <!-- tweaked classes -->
             <thead>
               <tr>
                 <th>#</th>
@@ -235,7 +261,7 @@
       block.className = 'instagram-media';
       block.setAttribute('data-instgrm-permalink', permalink);
       block.setAttribute('data-instgrm-version', '14');
-      block.style.width = '50%';
+      block.style.width = '100%';
       mount.appendChild(block);
       if (window.instgrm && window.instgrm.Embeds) {
         window.instgrm.Embeds.process();
