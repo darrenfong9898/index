@@ -37,16 +37,31 @@
       border:1px solid #213247;
     }
     .img-fit {
-      width: 100%;
-      height: 360px;              /* consistent tiles */
-      object-fit: contain;          /* keep full image visible */
-      border-radius: 10px;
-    }
-    /* Best post embed column stays compact */
-    #bestPostContainer .instagram-media {
-      margin: 0 middle !important;
-      background: transparent !important;
-    }
+  width: 100%;
+  height: 360px;
+  object-fit: contain;
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.logo-img {
+  height: 60px;           /* adjust size to your liking */
+  width: auto;            /* keep aspect ratio */
+  border-radius: 8px;     /* optional: rounded corners */
+}
+
+.img-fit:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+}
+
+/* Padlet / YouTube / GDrive iframe sizing */
+#bestPostContainer iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 540px;                         /* adjust height as desired */
+  border: 0;
+  border-radius: 10px;
+}
     footer { color: var(--muted); }
     a { color: #9ec1ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
@@ -57,30 +72,12 @@
 /* General table legibility */
 .table td, .table th { vertical-align: middle; }
 
-/* Instagram embed should fill width on mobile */
-#bestPostContainer .instagram-media {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
 /* Mobile sizing tweaks */
   .img-fit { height: 220px; }             /* was 360px */
   .card.p-5 { padding: 1.25rem !important; } /* soften padding on small screens */
 /* Add extra space between the chart and the next section */
 .bar-chart-container {
   margin-bottom: 2rem; /* adjust value if you want more or less */
-}
-/* Make IG embed stay inside the card */
-#bestPostContainer { 
-  display: flex; 
-  justify-content: center; 
-}
-#bestPostContainer .instagram-media,
-#bestPostContainer iframe {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;        /* override IG's min-width */
-  margin: 0 auto !important;
 }
 
 /* Optional: ensure the card won’t visually spill */
@@ -125,6 +122,31 @@
 }
 
 .bar-chart-container canvas { margin-bottom:16px; }
+/* Best-post container centers content */
+#bestPostContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* A tidy max-width for portrait screenshots */
+.best-post-wrap {
+  width: min(420px, 100%);     /* grows up to 420px, stays responsive */
+}
+
+/* Override the generic .img-fit for this specific image */
+.img-bestpost {
+  width: 100%;
+  height: auto;                /* let height follow the image */
+  object-fit: contain;         /* no cropping */
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
+  background: #0b1624;         /* subtle frame behind transparent areas */
+  padding: 8px;                /* “polaroid” feel; remove if undesired */
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+}
+
 
   </style>
 </head>
@@ -132,11 +154,12 @@
   <div class="container-fluid">
 
     <!-- Header -->
-    <header class="mb-4">
-      <h1 class="section-title">
-        <span class="text-danger">SBN</span> <span class="text-info">Anniversary!🐻</span>
-      </h1>
-    </header>
+<header class="mb-4 d-flex align-items-center">
+  <img src="LOGO.png" alt="SBN Logo" class="me-3 logo-img">
+  <h1 class="section-title mb-0">
+    <span class="text-danger">SBN</span> <span class="text-info">Anniversary!</span>
+  </h1>
+</header>
 
     <!-- ROW 1: Countdown (full width) -->
     <div class="row mb-4">
@@ -221,7 +244,21 @@
         <div class="card p-5">
           <h2 class="mb-3 section-title">👑Legend post for the week👑</h2>
           <!-- Fixed embed (no public input) -->
-          <div id="bestPostContainer"></div>
+          <div id="bestPostContainer" class="text-center">
+  <div class="best-post-wrap">
+    <a href="https://padlet.com/darrenfht/sbn-7th-anniversary-discussion-board-k3wfd0woayxjhi7o/wish/Xb8YaLXNRwjEayn1" target="_blank" rel="noopener">
+      <img src="Test.png"
+           alt="Legend Post for the Week"
+           class="img-bestpost">
+    </a>
+  </div>
+
+  <p class="text-muted small mt-2">
+    Click image to view the full Padlet post →
+  </p>
+</div>
+
+
         </div>
       </div>
       <div class="col-lg-6">
@@ -315,25 +352,6 @@ new Chart(ctx, {
     }
   }
 });
-
-
-    // ===== BEST POST EMBED (fixed) =====
-    const BEST_POST_PERMALINK = 'https://www.instagram.com/reel/EXAMPLE_ID/'; // <-- replace weekly
-    function renderBestPost(permalink) {
-      const mount = document.getElementById('bestPostContainer');
-      mount.innerHTML = '';
-      const block = document.createElement('blockquote');
-      block.className = 'instagram-media';
-      block.setAttribute('data-instgrm-permalink', permalink);
-      block.setAttribute('data-instgrm-version', '14');
-      mount.appendChild(block);
-      if (window.instgrm && window.instgrm.Embeds) {
-        window.instgrm.Embeds.process();
-      }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      renderBestPost(BEST_POST_PERMALINK);
-    });
   </script>
 </body>
 </html>
